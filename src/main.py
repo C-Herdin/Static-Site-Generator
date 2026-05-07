@@ -1,11 +1,14 @@
 import os
 import shutil
+import sys
 
 from textnode import TextNode, TextType
 from blocks import markdown_to_html, extract_title
 
+BASEPATH = sys.argv[1] if len(sys.argv) > 1 else "/"
+
 STATIC_PATH = "./static"
-PUBLIC_PATH = "./public"
+PUBLIC_PATH = "./docs"
 CONTENT_PATH = "./content"
 TEMPLATE_PATH = "./template.html"
 
@@ -39,6 +42,8 @@ def generate_page(from_path, template_path, dest_path):
     title = extract_title(markdown)
     html_file = template.replace(r"{{ Title }}", title)
     html_file = html_file.replace(r"{{ Content }}", html_string)
+    html_file = html_file.replace('href="/', f'href="{BASEPATH}')
+    html_file = html_file.replace('src="/', f'src="{BASEPATH}')
     
     try:
         os.makedirs(os.path.dirname(dest_path))
